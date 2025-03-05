@@ -6,15 +6,13 @@ from datetime import datetime
 
 
 def get_user_by_username(uname):
-    # Assuming you're using SQLAlchemy for ORM
-    user = User.query.filter_by(uname=uname).first()  # Query user by username
+    user = User.query.filter_by(uname=uname).first() 
     return user
 
 def get_user_from_database(id):
-    user = User.query.get(id)  # Fetch the user by their ID
+    user = User.query.get(id) 
     if user:
         print(f"User found: {user.uname}")
-        # Return the user as a dictionary
         return {
             'id': user.id,
             'fname': user.fname,
@@ -47,7 +45,7 @@ def register_routes(app, db, bcrypt):
         user = get_user_by_username(uname)
 
         if user and bcrypt.check_password_hash(user.pword, pword):
-            session["user_id"] = user.id  # Store the user ID in the session
+            session["user_id"] = user.id  
             return jsonify({
                 "id": user.id,
                 "message": "Login successful"
@@ -90,9 +88,8 @@ def register_routes(app, db, bcrypt):
 
     @app.route('/profile/<int:id>', methods=['GET'])
     def get_profile(id):
-        user = get_user_from_database(id)  # Fetch user from the database
+        user = get_user_from_database(id) 
         if user:
-            # Manually convert user object to dictionary
             user_data = {
                 'id': user.id,
                 'fname': user.fname,
@@ -100,7 +97,7 @@ def register_routes(app, db, bcrypt):
                 'email': user.email,
                 'uname': user.uname
             }
-            return jsonify(user_data)  # Return as JSON
+            return jsonify(user_data) 
         else:
             return jsonify({"error": "User not found"}), 404
         
@@ -112,7 +109,6 @@ def register_routes(app, db, bcrypt):
         return jsonify({"error": "User not logged in"}), 401
 
 
-    # API to fetch all topics for React frontend
     @app.route('/api/topics', methods=["GET"])
     def api_topics():
         topics = Topic.query.all()
@@ -120,7 +116,6 @@ def register_routes(app, db, bcrypt):
         return jsonify(topics_data)
 
 
-    # API for topic details (React will handle rendering this)
     @app.route('/api/topic_details/<int:topic_id>', methods=["GET"])
     def api_topic_details(topic_id):
         topic = Topic.query.get_or_404(topic_id)
@@ -133,7 +128,6 @@ def register_routes(app, db, bcrypt):
         return jsonify(topic_data)
 
 
-    # API to handle quiz submission
     @app.route('/api/quiz/<int:topic_id>', methods=["POST"])
     def api_quiz(topic_id):
         topic = Topic.query.get_or_404(topic_id)
